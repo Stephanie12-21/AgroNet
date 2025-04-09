@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//pour la newsletter
+model newsletter {
+  id               Int     @id @default(autoincrement())
+  email            String  @unique
+  unsubscribeToken String?
+}
+
+model user {
+  id            Int            @id @default(autoincrement())
+  nom           String
+  prenom        String
+  email         String         @unique
+  phone         String         @unique
+  hashPassword  String
+  role          String
+  profileImages profileImage[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  // <--
+  stripeAccountId        String?
+  stripeAccountCompleted Boolean @default(false)
+  // -->
+}
+
+model profileImage {
+  id     Int    @id @default(autoincrement())
+  path   String
+  userId Int
+  user   user   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
