@@ -8,11 +8,6 @@ import Link from "next/link";
 export default function LayoutAdmin({ children }) {
   const { data: session } = useSession();
 
-  const handleSignOut = async () => {
-    await signOut({ redirect: false });
-    router.push("/login");
-  };
-
   if (!session?.user) {
     return (
       <div className="flex items-center justify-center  min-h-screen bg-gray-100">

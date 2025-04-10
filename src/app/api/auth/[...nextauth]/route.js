@@ -82,6 +82,7 @@ export const authOptions = {
         stripeAccountId: token.stripeAccountId,
         stripeAccountCompleted: token.stripeAccountCompleted,
       };
+      console.log("session", session);
       return session;
     },
   },

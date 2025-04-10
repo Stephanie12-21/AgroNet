@@ -30,7 +30,7 @@ async function sendVerificationEmail(email, prenom, resetLink) {
         <p style="font-size: 16px; margin-bottom: 15px;">Bonjour ${prenom}, </p>
 
         <p style="font-size: 16px; margin-bottom: 15px;">
-        Cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe (valide pendant 5 minutes) :
+        Cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe (valide pendant 3 minutes) :
         </p>
 
         <div style="text-align: center; margin: 30px 0;">
@@ -92,7 +92,7 @@ export async function POST(req) {
   const { id, prenom } = user;
 
   const resetToken = jwt.sign({ email, id }, process.env.JWT_SECRET, {
-    expiresIn: "5m",
+    expiresIn: "3m",
   });
   const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
 

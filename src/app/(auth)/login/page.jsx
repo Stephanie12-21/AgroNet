@@ -37,6 +37,15 @@ export default function Login() {
     setIsPasswordVisible((prev) => !prev);
   };
 
+  const slugify = (str) => {
+    return str
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  };
+
   const handleSubmit = async () => {
     try {
       emailLoginSchema.parse({ email, password });
@@ -64,13 +73,16 @@ export default function Login() {
       });
 
       const role = updatedSession?.user?.role;
+      const firstName = updatedSession?.user?.nom || "utilisateur";
+      const lastName = updatedSession?.user?.prenom || "inconnu";
+      const slug = `${slugify(firstName)}-${slugify(lastName)}`;
 
       if (role === "acheteur") {
-        router.push("/acheteur/");
+        router.push(`/acheteur/${slug}/`);
       } else if (role === "producteur") {
-        router.push("/producteur/");
+        router.push(`/producteur/${slug}/`);
       } else if (role === "admin") {
-        router.push(`/admin/`);
+        router.push(`/admin/${slug}/`);
       } else {
         router.push("/login");
       }
