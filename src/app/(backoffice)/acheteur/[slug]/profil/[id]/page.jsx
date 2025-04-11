@@ -19,6 +19,9 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { SuccessModal } from "@/app/(dialog)/success/SuccessModal";
+import { ErrorModal } from "@/app/(dialog)/erreur/ErrorModal";
+import { InfoModal } from "@/app/(dialog)/info/InfoModal";
 
 const UserProfilePreview = () => {
   const { id: userId } = useParams();
@@ -30,6 +33,10 @@ const UserProfilePreview = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [imageDetails, setImageDetails] = useState(null);
   const [showVerifInfo, setShowVerifInfo] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+  const [infoMessage, setInfoMessage] = useState("");
   const [editedUser, setEditedUser] = useState({
     nom: "",
     prenom: "",
@@ -114,6 +121,8 @@ const UserProfilePreview = () => {
       } catch (error) {
         console.error(error);
         alert(error.message);
+        setInfoMessage(result.error.errors[0].message);
+        setIsInfoModalOpen(true);
         return;
       }
 
@@ -135,14 +144,15 @@ const UserProfilePreview = () => {
           throw new Error("Erreur lors de l'envoi du SMS");
         }
         console.log("SMS envoyé avec succès");
-        console.log(
-          "Code de vérification envoyé par SMS:",
-          generatedCodes.phone
-        );
+        // console.log(
+        //   "Code de vérification envoyé par SMS:",
+        //   generatedCodes.phone
+        // );
         setShowVerifInfo(true);
       } catch (error) {
         console.error(error);
-        alert(error.message);
+        setInfoMessage(result.error.errors[0].message);
+        setIsInfoModalOpen(true);
         return;
       }
     } else {
@@ -167,9 +177,8 @@ const UserProfilePreview = () => {
     ) {
       handleConfirmEdit();
     } else {
-      alert(
-        "Les codes de vérification ne correspondent pas. Veuillez réessayer."
-      );
+      setInfoMessage("Les codes de vérification ne correspondent pas.");
+      setIsInfoModalOpen(true);
     }
     setShowVerifInfo(false);
   };
@@ -197,10 +206,13 @@ const UserProfilePreview = () => {
 
       await fetchUserData();
       setIsEditing(false);
-      alert("Profil mis à jour avec succès !");
+
+      setIsSuccessModalOpen(true);
     } catch (error) {
       console.error("Erreur lors de la mise à jour du profil :", error);
       alert("Erreur lors de la mise à jour du profil. Veuillez réessayer.");
+
+      setIsErrorModalOpen(true);
     }
   };
 
@@ -518,6 +530,19 @@ const UserProfilePreview = () => {
           onCancel={handleCancelEdit}
         />
       )}
+      <SuccessModal
+        isOpen={isSuccessModalOpen}
+        onClose={() => setIsSuccessModalOpen(false)}
+      />
+      <ErrorModal
+        isOpen={isErrorModalOpen}
+        onClose={() => setIsErrorModalOpen(false)}
+      />
+      <InfoModal
+        isOpen={isInfoModalOpen}
+        onClose={() => setIsInfoModalOpen(false)}
+        message={infoMessage}
+      />
     </div>
   );
 };

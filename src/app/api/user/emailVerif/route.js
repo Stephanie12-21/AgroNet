@@ -38,11 +38,11 @@ async function sendVerificationEmail(email, prenom, verificationCode) {
         </div>
 
         <p style="font-size: 16px; margin-bottom: 15px;">À bientôt,</p>
-        <p style="font-size: 16px; font-weight: bold;">L'équipe de Lilee</p>
+        <p style="font-size: 16px; font-weight: bold;">L'équipe de AgroNet</p>
       </div>
 
       <div style="text-align: center; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 12px;">
-        <p>© 2024 Lilee. Tous droits réservés.</p>
+        <p>© 2024 AgroNet. Tous droits réservés.</p>
       </div>
     </div>
   `,

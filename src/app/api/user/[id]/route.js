@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
-export async function GET(context) {
-  const { params } = context;
+export async function GET(req, { params }) {
+  const userId = params.id;
 
-  const resolvedParams = await params;
-
-  const userId = resolvedParams.id;
   if (!userId) {
     return NextResponse.json(
       { message: "ID de l'utilisateur manquant." },
