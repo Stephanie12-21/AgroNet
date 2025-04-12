@@ -59,6 +59,8 @@ model produits {
   designation       String
   provenance        String
   quantite          Int
+  unite             unite
+  uniteTemps        uniteTemps
   dateRecolte       DateTime
   dureeConservation Int
   categorie         categories
@@ -76,4 +78,20 @@ enum categories {
   Apicoles
   Aquacoles
   Industrielles_rente
+}
+
+enum unite {
+  Kg
+  g
+  L
+  caisse
+  unite
+  boite
+}
+
+enum uniteTemps {
+  an
+  mois
+  semaine
+  jour
 }

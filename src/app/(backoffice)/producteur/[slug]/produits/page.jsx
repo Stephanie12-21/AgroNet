@@ -59,31 +59,43 @@ const ProduitsPage = () => {
     setType("");
   };
 
-  const handleAddProduct = (e) => {
+  const handleAddProduct = async (e) => {
     e.preventDefault();
 
-    console.log("👤 Produit ajouté par l'utilisateur :", userId);
-
-    console.log("📝 Données du formulaire :", {
+    const data = {
       designation,
       provenance,
-      quantite:
-        quantite && unite ? `${quantite} ${unite}` : "Pas de quantité définie",
-      unite,
+      quantite,
+      dateRecolte,
+      dureeConservation,
       categorie,
       type,
-      dateRecolte:
-        dateRecolte && isValid(dateRecolte)
-          ? format(dateRecolte, "yyyy-MM-dd", { locale: fr })
-          : "Pas de date sélectionnée",
-      dureeConservation:
-        dureeConservation && uniteTemps
-          ? `${dureeConservation} ${uniteTemps}`
-          : "Pas de durée définie",
-    });
+      userId,
+      unite,
+      uniteTemps,
+    };
 
-    resetForm();
-    setFormOpen(false);
+    try {
+      const response = await fetch("/api/produit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        console.log("Produit ajouté avec succès !");
+        resetForm();
+        setFormOpen(false);
+      } else {
+        console.error("Erreur lors de l'ajout du produit.");
+        alert("Erreur lors de l'ajout du produit. Veuillez réessayer.");
+      }
+    } catch (error) {
+      console.error("❌ Erreur lors de l'ajout :", error);
+      alert("Erreur lors de l'ajout du produit. Veuillez réessayer.");
+    }
   };
 
   const categoryWithType = {
