@@ -18,7 +18,7 @@ import { Star } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 
-export default function AcheteurPage() {
+export default function ProducteurPage() {
   const { slug } = useParams();
   const router = useRouter();
   const { data: session } = useSession();
@@ -53,11 +53,11 @@ export default function AcheteurPage() {
   };
 
   const handleProfile = () => {
-    router.push(`/acheteur/${slug}/profil/${session?.user?.id}`);
+    router.push(`/producteur/${slug}/profil/${session?.user?.id}`);
   };
 
   const handleProduits = () => {
-    router.push(`/acheteur/${slug}/produits`);
+    router.push(`/producteur/${slug}/produits`);
   };
 
   const handleSubmit = async (e) => {
@@ -138,7 +138,7 @@ export default function AcheteurPage() {
           onClick={handleProfile}
           className="bg-primary text-white hover:bg-primary/80"
         >
-          Profil de l&apos;acheteur
+          Profil du producteur
         </Button>
       </div>
       <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
