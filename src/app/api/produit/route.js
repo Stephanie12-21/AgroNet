@@ -1,60 +1,48 @@
-import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { NextResponse } from "next/server";
 
-export async function POST(request) {
+export async function POST(req) {
   try {
-    const body = await request.json();
+    const formData = await req.formData();
 
-    const requiredFields = [
-      "designation",
-      "quantite",
-      "dureeConservation",
-      "dateRecolte",
-      "provenance",
-      "categorie",
-      "type",
-      "userId",
-      "unite",
-      "uniteTemps",
-    ];
+    const fields = {
+      designation: formData.get("designation"),
+      quantite: Number(formData.get("quantite")),
+      dureeConservation: Number(formData.get("dureeConservation")),
+      dateRecolte: new Date(formData.get("dateRecolte")),
+      provenance: formData.get("provenance"),
+      categorie: formData.get("categorie"),
+      type: formData.get("type"),
+      userId: parseInt(formData.get("userId")),
+      unite: formData.get("unite"),
+      uniteTemps: formData.get("uniteTemps"),
+    };
 
-    for (const field of requiredFields) {
-      if (!body[field]) {
+    // Vérification des champs requis
+    for (const [key, value] of Object.entries(fields)) {
+      if (!value || value === "") {
         return NextResponse.json(
-          { message: `Le champ "${field}" est requis.` },
+          { message: `Le champ "${key}" est requis.` },
           { status: 400 }
         );
       }
     }
 
     const newProduit = await db.produits.create({
-      data: {
-        designation: body.designation,
-        quantite: body.quantite,
-        dureeConservation: body.dureeConservation,
-        unite: body.unite,
-        uniteTemps: body.uniteTemps,
-        dateRecolte: new Date(body.dateRecolte),
-        provenance: body.provenance,
-        categorie: body.categorie,
-        type: body.type,
-        userId: body.userId,
-      },
+      data: fields,
     });
 
     return NextResponse.json(
       {
-        message: "Annonce créée avec succès.",
+        message: "Produit créé avec succès.",
         produit: newProduit,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Erreur lors de la création du produit :", error);
+    console.error("❌ Erreur lors de la création du produit :", error);
     return NextResponse.json(
-      {
-        message: "Une erreur est survenue lors de la création du produit.",
-      },
+      { message: "Erreur serveur lors de la création du produit." },
       { status: 500 }
     );
   }

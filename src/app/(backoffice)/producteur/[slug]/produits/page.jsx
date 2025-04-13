@@ -61,45 +61,47 @@ const ProduitsPage = () => {
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
-
-    const data = {
-      designation,
-      provenance,
-      quantite,
-      dateRecolte,
-      dureeConservation,
-      categorie,
-      type,
-      userId,
+    console.log("données rçues du formulaire", {
       unite,
-      uniteTemps,
-    };
+    });
+
+    const formData = new FormData();
+    formData.append("designation", designation);
+    formData.append("provenance", provenance);
+    formData.append("quantite", quantite); // FormData garde tout en string
+    formData.append("dateRecolte", dateRecolte);
+    formData.append("dureeConservation", dureeConservation);
+    formData.append("categorie", categorie);
+    formData.append("type", type);
+    formData.append("userId", userId);
+    formData.append("unite", unite);
+    formData.append("uniteTemps", uniteTemps);
 
     try {
       const response = await fetch("/api/produit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+        body: formData,
       });
 
+      const result = await response.json();
+
       if (response.ok) {
-        console.log("Produit ajouté avec succès !");
+        console.log("✅ Produit ajouté avec succès !");
+        alert("Produit ajouté avec succès !");
         resetForm();
         setFormOpen(false);
       } else {
-        console.error("Erreur lors de l'ajout du produit.");
-        alert("Erreur lors de l'ajout du produit. Veuillez réessayer.");
+        console.error("❌ Erreur :", result.message);
+        alert(result.message || "Erreur lors de l'ajout du produit.");
       }
     } catch (error) {
       console.error("❌ Erreur lors de l'ajout :", error);
-      alert("Erreur lors de l'ajout du produit. Veuillez réessayer.");
+      alert("Erreur réseau ou serveur. Veuillez réessayer.");
     }
   };
 
   const categoryWithType = {
-    Vivrières: [
+    Vivrieres: [
       "Fruits ",
       "Légumes",
       "Céréales",
@@ -107,13 +109,13 @@ const ProduitsPage = () => {
       "Légumineuses",
       "Racines comestibles",
     ],
-    Fourragères: [
+    Fourrageres: [
       "Plantes herbacées ",
       "Plantes fourragères céréalières",
       "Foin et pâturages",
     ],
     Laitiers: ["Lait cru", "Fromages", "Yaourts ", "Beurre"],
-    Carnés: [
+    Carnes: [
       "Viande bovine",
       "Viande ovine",
       "Viande avicole",
